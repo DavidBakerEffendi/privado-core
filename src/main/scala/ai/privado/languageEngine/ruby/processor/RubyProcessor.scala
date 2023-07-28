@@ -170,7 +170,8 @@ object RubyProcessor {
     // Need to convert path to absolute path as ruby cpg needs abolute path of repo
     val absoluteSourceLocation = File(sourceRepoLocation).path.toAbsolutePath.normalize().toString
 
-    val config = Config().withInputPath(absoluteSourceLocation).withOutputPath(cpgOutputPath)
+    val config =
+      Config().withInputPath(absoluteSourceLocation).withOutputPath(cpgOutputPath).withIgnoredFilesRegex(".*/spec/.*")
     // val xtocpg = new RubySrc2Cpg().createCpg(config)
 
     val global = new Global()
