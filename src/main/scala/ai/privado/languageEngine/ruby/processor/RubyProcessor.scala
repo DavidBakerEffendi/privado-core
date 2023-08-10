@@ -235,7 +235,6 @@ object RubyProcessor {
   class RubyCfgCreator(entryNode: Method, diffGraph: DiffGraphBuilder) extends CfgCreator(entryNode, diffGraph) {
 
     override protected def cfgForContinueStatement(node: ControlStructure): Cfg = {
-      println("here it comes...........................>>>>>>>>>>>>>>>>>")
       node.astChildren.find(_.order == 1) match {
         case Some(jumpLabel: JumpLabel) =>
           val labelName = jumpLabel.name
@@ -293,11 +292,10 @@ object RubyProcessor {
       new MetaDataPass(cpg, Languages.RUBYSRC, config.inputPath).createAndApply()
       new ConfigFileCreationPass(cpg).createAndApply()
       // TODO: Either get rid of the second timeout parameter or take this one as an input parameter
-      Using.resource(new ResourceManagedParser(config.antlrCacheMemLimit)) { parser =>
-        val astCreationPass = new AstCreationPass(cpg, global, parser, RubySrc2Cpg.packageTableInfo, config)
-        astCreationPass.createAndApply()
-        TypeNodePass.withRegisteredTypes(astCreationPass.allUsedTypes(), cpg).createAndApply()
-      }
+      val parser          = new ResourceManagedParser(config.antlrCacheMemLimit)
+      val astCreationPass = new AstCreationPass(cpg, global, parser, RubySrc2Cpg.packageTableInfo, config)
+      astCreationPass.createAndApply()
+      TypeNodePass.withRegisteredTypes(astCreationPass.allUsedTypes(), cpg).createAndApply()
     }
     println(
       s"${TimeMetric.getNewTime()} - Parsing source code done in \t\t\t\t\t\t- ${TimeMetric.setNewTimeToLastAndGetTimeDiff()}"
