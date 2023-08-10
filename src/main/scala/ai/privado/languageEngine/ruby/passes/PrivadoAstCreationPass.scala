@@ -32,6 +32,7 @@ class PrivadoAstCreationPass(
   packageTable: PackageTable,
   config: Config
 ) extends AstCreationPass(cpg, global, parser, packageTable, config) {
+  private val logger = LoggerFactory.getLogger(this.getClass)
   override def createApplySerializeAndStore(
     serializedCpg: SerializedCpg,
     inverse: Boolean = false,
@@ -78,9 +79,14 @@ class PrivadoAstCreationPass(
             })
           } else if (completionQueue.nonEmpty) {
             val future = completionQueue.removeHead()
-            val res    = Await.result(future, 60.seconds)
-            nDiff += res.size
-            writer.queue.put(Some(res))
+            try {
+              val res = Await.result(future, 60.seconds)
+              nDiff += res.size
+              writer.queue.put(Some(res))
+            } catch {
+              case ex: Exception =>
+                logger.error(s"Timeout error while parsing file", ex)
+            }
           } else {
             done = true
           }
