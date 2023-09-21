@@ -32,3 +32,4 @@ COPY --from=build /home/privado-core/target/universal/stage/bin /home/privado-co
 COPY --from=build /home/privado-core/log4j2.xml /home/privado-core-build/
 RUN echo $VERSION >> /home/privado-core-build/version.txt
 
+
