@@ -158,8 +158,8 @@ object Utilities {
     filename: String,
     lineToHighlight: Option[Integer],
     message: String = "",
-    excerptStartLine: Int = -5,
-    excerptEndLine: Int = 5
+    excerptStartLine: Int = -25,
+    excerptEndLine: Int = 25
   ): String = {
     val arrow: CharSequence = "/* <=== " + message + " */ "
     try {
